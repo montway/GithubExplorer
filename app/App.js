@@ -8,7 +8,8 @@ const {
   StyleSheet,
   View,
   Component,
-  TabBarIOS
+  TabBarIOS,
+  NavigatorIOS
 } = React;
 
 class App extends Component {
@@ -29,7 +30,12 @@ class App extends Component {
           icon={require('image!inbox')}
           onPress={() => this.setState({selectedTab: 'feed'})}>
 
-          <Feed />
+          <NavigatorIOS
+            style={{flex: 1}}
+            initialRoute={{
+              component: Feed,
+              title: 'Feed'
+            }} />
         </TabBarIOS.Item>
 
         <TabBarIOS.Item
