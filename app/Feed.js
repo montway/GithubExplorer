@@ -1,6 +1,8 @@
 'use strict';
 
 import React from 'react-native';
+import moment from 'moment';
+
 import AuthService from './AuthService';
 
 const {
@@ -9,7 +11,8 @@ const {
   View,
   Component,
   ListView,
-  ActivityIndicatorIOS
+  ActivityIndicatorIOS,
+  Image
 } = React;
 
 export default class Feed extends Component {
@@ -56,13 +59,42 @@ export default class Feed extends Component {
 
   renderRow(rowData) {
     return (
-      <Text style={{
-        color: '#333',
-        backgroundColor: '#FFF',
-        alignSelf: 'center'
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        padding: 20,
+        alignItems: 'center',
+        borderColor: '#D7D7D7',
+        borderBottomWidth: 1
       }}>
-        {rowData.actor.login}
-      </Text>
+        <Image
+          source={{uri: rowData.actor.avatar_url}}
+          style={{
+            height: 36,
+            width: 36,
+            borderRadius: 18
+          }} />
+
+        <View style={{paddingLeft: 20}}>
+          <Text style={{backgroundColor: '#FFF'}}>
+            {moment(rowData.created_at).fromNow()}
+          </Text>
+          <Text style={{
+            backgroundColor: '#FFF',
+            fontWeight: '600'
+          }}>
+            {rowData.actor.login}
+          </Text>
+          <Text style={{backgroundColor: '#FFF'}}>
+            {rowData.payload.ref.replace('refs/heads/', '')}
+          </Text>
+          <Text style={{backgroundColor: '#FFF'}}>
+            at <Text style={{fontWeight: '600'}}>
+              {rowData.repo.name}
+            </Text>
+          </Text>
+        </View>
+      </View>
     );
   }
 
@@ -79,7 +111,7 @@ export default class Feed extends Component {
         </View>
       );
     }
-    
+
     return (
       <View style={{
         flex: 1,
