@@ -8,7 +8,8 @@ const {
   StyleSheet,
   View,
   Component,
-  ListView
+  ListView,
+  ActivityIndicatorIOS
 } = React;
 
 export default class Feed extends Component {
@@ -54,7 +55,6 @@ export default class Feed extends Component {
   }
 
   renderRow(rowData) {
-    console.log(rowData);
     return (
       <Text style={{
         color: '#333',
@@ -67,6 +67,19 @@ export default class Feed extends Component {
   }
 
   render() {
+    if (this.state.showProgress) {
+      return (
+        <View style={{
+          flex: 1,
+          justifyContent: 'center'
+        }}>
+          <ActivityIndicatorIOS
+            size={'large'}
+            animating={true} />
+        </View>
+      );
+    }
+    
     return (
       <View style={{
         flex: 1,
