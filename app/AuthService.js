@@ -1,8 +1,8 @@
 'use strict';
 
-import buffer from 'buffer';
 import { AsyncStorage } from 'react-native';
 import _ from 'lodash';
+import { Encoding } from 'NativeModules';
 
 const authKey = 'auth';
 const userKey = 'user';
@@ -30,43 +30,50 @@ class AuthService {
     });
   }
 
+  /**
+   * Login function that uses the custom OBJ-C encoding wrapper
+   * @param  {Object}   creds [credential object]
+   * @param  {Function} cb    [callback function for auth]
+   * @return {Object}
+   */
   login(creds, cb) {
-    const encodedAuth = new buffer.Buffer(
-      creds.username + 
-      ':' + creds.password).toString('base64');
+    const authStr = creds.username + ':' + creds.password;
 
-    fetch('https://api.github.com/user', {
-        headers: {
-          'Authorization' : 'Basic ' + encodedAuth
-        }
-      })
-      .then((response) => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
+    Encoding.base64Encode(authStr, (encodedAuth) => {
 
-        throw {
-          badCredentials: response.status === 401,
-          unknownError: response.status !== 401
-        }
-      })
-      .then((response) => {
-        return response.json();
-      })
-      .then((results) => {
-        AsyncStorage.multiSet([
-          ['auth', encodedAuth],
-          ['user', JSON.stringify(results)]
-        ], (err) => {
-          if (err) {
-            throw err;
+      fetch('https://api.github.com/user', {
+          headers: {
+            'Authorization' : 'Basic ' + encodedAuth
+          }
+        })
+        .then((response) => {
+          if (response.status >= 200 && response.status < 300) {
+            return response;
           }
 
-          return cb({ success: true });
+          throw {
+            badCredentials: response.status === 401,
+            unknownError: response.status !== 401
+          }
+        })
+        .then((response) => {
+          return response.json();
+        })
+        .then((results) => {
+          AsyncStorage.multiSet([
+            ['auth', encodedAuth],
+            ['user', JSON.stringify(results)]
+          ], (err) => {
+            if (err) {
+              throw err;
+            }
+
+            return cb({ success: true });
+          });
+        })
+        .catch((err) => {
+          return cb(err);
         });
-      })
-      .catch((err) => {
-        return cb(err);
       });
   }
 };
