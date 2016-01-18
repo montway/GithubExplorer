@@ -123,10 +123,10 @@ export default class SearchResults extends Component {
       return (
         <View style={{
             flex: 1,
-            justifyContent: 'flex-start'
+            justifyContent: 'flex-start',
+            paddingTop: 65
         }}>
             <ListView
-                contentInset={{top: 80}}
                 dataSource={this.state.dataSource}
                 renderRow={this.renderRow.bind(this)} />
         </View>

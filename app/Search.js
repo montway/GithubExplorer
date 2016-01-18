@@ -35,6 +35,9 @@ export default class Search extends Component {
     return (
       <View style={styles.container}>
 
+        <Image style={styles.logo}
+          source={require('image!Octocat')} />
+
         <TextInput
           style={styles.input}
           onChangeText={(text) => this.setState({
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F5FCFF',
     flex: 1,
-    paddingTop: 100,
+    paddingTop: 80,
     alignItems: 'center',
     padding: 10
   },
